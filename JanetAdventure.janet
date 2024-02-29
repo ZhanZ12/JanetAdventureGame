@@ -1,13 +1,14 @@
 (def player-inventory (array))
 
-(defn has-key? []
-  (some |(= $ "magical key") player-inventory))
+(defn has-item? [item]
+  (some |(= $ item) player-inventory))
 
-(defn add-key-to-inventory []
-  (array/push player-inventory "magical key"))
+(defn add-to-inventory [item]
+  (unless (has-item? item)
+    (array/push player-inventory item)))
 
 (defn hidden-chamber [back-fn]
-  (if (has-key?)
+  (if (has-item? "magical key")
     (print "With the key you found, you unlock the hidden chamber and discover an ancient artifact of immense power. Adventure successful.")
     (do
       (print "The chamber is locked. If only you had a key...")
@@ -19,7 +20,7 @@
   (var decision (string/trim (file/read stdin :line)))
   (cond
     (= decision "yes") (do
-                         (add-key-to-inventory)
+                         (add-to-inventory "magical key")
                          (print "You take the magical key. It might unlock something important.")
                          (back-fn))
     (= decision "no") (print "You leave the key and exit the cave. Adventure over.")
