@@ -71,7 +71,7 @@
                                                       (print "Emboldened by your new weapon, you turn to face the dragon.")
                                                       (if (or (has-item? "magical power") (has-item? "magical sword"))
                                                         (do
-                                                          (print "With the magical sword in hand, you bravely confront and defeat the dragon! Adventure continues..."))
+                                                          (print "With the magical sword in hand, you bravely confront and defeat the dragon! "))
                                                         (do
                                                           (print "Despite your valiant effort, the dragon overpowers you. Adventure over."))))
                              (= decision2 "go back") (do
@@ -107,12 +107,13 @@
 
   (navigate))
 
-
 (defn start-adventure []
-  (print "You find yourself at the entrance of a dark, mysterious cave. Do you enter? (yes/no)")
+  (print "You find yourself at the entrance of a dark, mysterious cave. Legend says a fierce dragon guards a treasure within. Do you enter to defeat the dragon and claim the treasure? (yes/no)")
   (var decision (string/trim (file/read stdin :line)))
   (if (= decision "yes")
-    (cave-entrance)
+    (do
+      (print "Your task is clear: defeat the dragon. You may find help along the way.")
+      (cave-entrance))
     (print "You decide not to enter the cave and return home. Adventure over.")))
 
 (start-adventure)
