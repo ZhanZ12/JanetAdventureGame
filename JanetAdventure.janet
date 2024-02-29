@@ -41,8 +41,9 @@
   (var decision (string/trim (file/read stdin :line)))
   (cond
     (= decision "yes") (do
+                         (add-to-inventory "magical power")
                          (print "You feel a surge of power. Your adventure takes a magical turn.")
-                         (ancient-library back-fn))
+                         (back-fn))
     (= decision "no") (print "You decide not to risk it and continue on your path. Adventure continues...")
     (= decision "back") (back-fn)))
 
@@ -56,10 +57,31 @@
     (= decision "back") (back-fn)))
 
 (defn right-path [back-fn]
-  (print "You encounter a sleeping dragon. Do you try to sneak by or leave? (sneak/leave/back)")
+  (print "You encounter a sleeping dragon. Do you try to sneak by, fight, or leave? (sneak/fight/leave/back)")
   (var decision (string/trim (file/read stdin :line)))
   (cond
-    (= decision "sneak") (mysterious-pond back-fn)
+    (= decision "sneak") (do
+                           (print "As you sneak by the dragon, you notice a glint of metal. It's a magical sword!")
+                           (add-to-inventory "magical sword")
+                           (print "You quietly take the magical sword.")
+                           (print "Do you wish to attack the dragon with the sword or go back? (attack/go back)")
+                           (var decision2 (string/trim (file/read stdin :line)))
+                           (cond
+                             (= decision2 "attack") (do
+                                                      (print "Emboldened by your new weapon, you turn to face the dragon.")
+                                                      (if (or (has-item? "magical power") (has-item? "magical sword"))
+                                                        (do
+                                                          (print "With the magical sword in hand, you bravely confront and defeat the dragon! Adventure continues..."))
+                                                        (do
+                                                          (print "Despite your valiant effort, the dragon overpowers you. Adventure over."))))
+                             (= decision2 "go back") (do
+                                                       (print "You decide not to risk the confrontation and continue exploring the cave.")
+                                                       (back-fn))))
+    (= decision "fight") (if (has-item? "magical power")
+                           (do
+                             (print "With the magical power you gained, you bravely confront and defeat the dragon! Dragon's treasures are now yours. Adventure over"))
+                           (do
+                             (print "Without magical power, the dragon awakes and defeats you. Adventure over.")))
     (= decision "leave") (print "You decide not to risk it and go back the way you came. Adventure over.")
     (= decision "back") (back-fn)))
 
