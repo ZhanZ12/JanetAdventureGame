@@ -1,14 +1,27 @@
+(def player-inventory (array))
+
+(defn has-key? []
+  (some |(= $ "magical key") player-inventory))
+
+(defn add-key-to-inventory []
+  (array/push player-inventory "magical key"))
+
 (defn hidden-chamber [back-fn]
-  (print "With the key you found, you unlock the hidden chamber and discover an ancient artifact of immense power. Adventure successful.")
-  (back-fn))
+  (if (has-key?)
+    (print "With the key you found, you unlock the hidden chamber and discover an ancient artifact of immense power. Adventure successful.")
+    (do
+      (print "The chamber is locked. If only you had a key...")
+      (back-fn))))
+
 
 (defn open-chest [back-fn]
   (print "Inside the chest, you find a magical key! Do you take it? (yes/no/back)")
   (var decision (string/trim (file/read stdin :line)))
   (cond
     (= decision "yes") (do
+                         (add-key-to-inventory)
                          (print "You take the magical key. It might unlock something important.")
-                         (hidden-chamber back-fn))
+                         (back-fn))
     (= decision "no") (print "You leave the key and exit the cave. Adventure over.")
     (= decision "back") (back-fn)))
 
@@ -49,20 +62,25 @@
     (= decision "leave") (print "You decide not to risk it and go back the way you came. Adventure over.")
     (= decision "back") (back-fn)))
 
+
 (defn cave-entrance []
   (defn navigate []
     (print "Inside the cave, you see several paths: 'left', 'right', 'straight', 'up', 'down', 'mysterious glow', 'hidden door'. Which do you choose? (or type 'back' to leave)")
-    (var decision (string/trim (file/read stdin :line)))
-    (cond
-      (= decision "left") (left-path navigate)
-      (= decision "right") (right-path navigate)
-      (= decision "straight") (print "You walk straight into a wall. Perhaps not the best decision.")
-      (= decision "up") (print "You climb up the cave walls and find a small exit. You escape.")
-      (= decision "down") (print "You find a deep pit. It's too risky to jump.")
-      (= decision "mysterious glow") (mysterious-pond navigate)
-      (= decision "hidden door") (print "The door is locked. If only you had a key...")
-      (= decision "back") (print "You decide to leave the cave. Adventure over.")
-      (true (navigate))))
+    (let [decision (string/trim (file/read stdin :line))]
+      (match decision
+        "left" (left-path navigate)
+        "right" (right-path navigate)
+        "straight" (print "You walk straight into a wall. Perhaps not the best decision.")
+        "up" (print "You climb up the cave walls and find a small exit. You escape.")
+        "down" (print "You find a deep pit. It's too risky to jump.")
+        "mysterious glow" (mysterious-pond navigate)
+        "hidden door" (do
+                        (print "You approach a hidden door.")
+                        (hidden-chamber navigate))
+        "back" (print "You decide to leave the cave. Adventure over.")
+        _ (do
+            (print "Invalid input. Please choose a valid direction or type 'back' to leave.")
+            (navigate)))))
 
   (navigate))
 
