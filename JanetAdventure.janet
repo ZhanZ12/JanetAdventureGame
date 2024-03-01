@@ -1,3 +1,5 @@
+(defn clear-screen []
+  (print (string/repeat "\n" 100))) 
 (var game-over? false)
 (def player-inventory (array))
 
@@ -170,7 +172,7 @@
   (navigate))
 
 (defn start-adventure []
-
+  (clear-screen)
   (var decision "")
   (while (not (or (= decision "yes") (= decision "no")))
     (do
