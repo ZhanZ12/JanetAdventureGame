@@ -1,18 +1,30 @@
+#-------Done by Mussin Assyltas and Zhunussov Zhan-----
+#
+#This code to 'clear' the screen
 (defn clear-screen []
   (print (string/repeat "\n" 100))) 
+
+#Condintion to determine if the game is over
 (var game-over? false)
+
+#Player inventory
 (def player-inventory (array))
 
+#Check if player has the required item for different scenarios
 (defn has-item? [item]
   (some |(= $ item) player-inventory))
 
+#Check if the player has the required magic
 (defn has-magical-power? []
   (some |(= $ "magical power") player-inventory))
 
+#Adds the item/power to inventory
 (defn add-to-inventory [item]
   (unless (has-item? item)
     (array/push player-inventory item)))
 
+
+#Hidden chamber accessable in the entrance behind 'hidden door'
 (defn hidden-chamber [back-fn]
   (if (has-item? "magical key")
     (do
@@ -25,12 +37,7 @@
       (back-fn))))
 
 
-(defn open-chest []
-  (print "\n \n As you approach the chest, it magically opens on its own, revealing a glowing magical key inside.")
-  (add-to-inventory "magical key")
-  (print "\n \n The magical key has been added to your inventory. It might unlock something important."))
-
-
+#Ancient library
 (defn ancient-library [back-fn]
   (var decision "")
   (while (not (or (= decision "yes") (= decision "no") (= decision "back")))
@@ -46,6 +53,7 @@
     (print "\n \n Invalid input. Please choose 'yes', 'no', or 'back'.")
     (set decision "")))
 
+#Mysterios pond, behind the glow
 (defn mysterious-pond [back-fn]
   (var decision "")
   (while (not (or (= decision "yes") (= decision "no") (= decision "back")))
@@ -63,6 +71,13 @@
     (print "\n \n Invalid input. Please choose 'yes', 'no', or 'back'.")
     (set decision "")))
 
+
+(defn open-chest []
+  (print "\n \n As you approach the chest, it magically opens on its own, revealing a glowing magical key inside.")
+  (add-to-inventory "magical key")
+  (print "\n \n The magical key has been added to your inventory. It might unlock something important."))
+
+#Left path
 (defn left-path [back-fn]
   (var decision "")
   (while (not (or (= decision "yes") (= decision "no")))
@@ -83,7 +98,7 @@
       (print "\n \n Invalid input. Please choose 'yes' or 'no'.")
     )))
 
-
+#Right path
 (defn right-path [back-fn]
   (var decision "")
   (while (not (or (= decision "sneak") (= decision "fight") (= decision "leave") (= decision "back") game-over?))
@@ -128,6 +143,8 @@
         (do
           (print "\n \n Invalid input. Please choose 'sneak', 'fight', 'leave', or 'back'.")
           (set decision ""))))))
+
+#Cave entrance
 (defn cave-entrance []
   (defn navigate []
     (unless game-over?
@@ -171,6 +188,7 @@
 
   (navigate))
 
+#Start
 (defn start-adventure []
   (clear-screen)
   (var decision "")
